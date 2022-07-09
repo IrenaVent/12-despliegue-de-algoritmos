@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 
-from app.core.enums import CommentType
+from app.core.enums import Sentiment
 
 
-class CommentTypePredictionResult(BaseModel):
-    label: CommentType
+class SentimentPredictionResult(BaseModel):
+    label: Sentiment
     score: float
     elapsed_time: float

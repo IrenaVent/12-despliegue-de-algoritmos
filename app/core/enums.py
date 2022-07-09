@@ -1,6 +1,6 @@
 from enum import Enum
 
 
-class CommentType(Enum):
+class Sentiment(Enum):
     NOTROLL = "NOTROLL"
     TROLL = "TROLL"

@@ -10,13 +10,13 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 from app.core.messages import NO_VALID_PAYLOAD
 from app.models.payload import TextPayload, payload_to_text
-from app.models.prediction import CommentTypetPredictionResult
-from app.core.enums import CommentType
+from app.models.prediction import SentimentPredictionResult
+from app.core.enums import Sentiment
 from app.core.config import (
     KERAS_MODEL,
     TOKENIZER_MODEL,
     SEQUENCE_LENGTH,
-    TROLL_THRESHOLDS,
+    SENTIMENT_THRESHOLD,
 )
 
 
@@ -38,7 +38,7 @@ class SentimentAnalysisModel:
         self.tokenizer = pickle.load(tf.io.gfile.GFile(tokenizer_path, mode="rb"))
 
     def _decode_sentiment(self, score: float, include_neutral=True) -> str:
-        return CommentType.NOTROLL.value if score < 0.5 else CommentType.TROLL.value
+        return Sentiment.NOTROLL.value if score < 0.5 else Sentiment.TROLL.value
 
     def _pre_process(self, payload: TextPayload) -> str:
         logger.debug("Pre-processing payload.")
@@ -55,12 +55,12 @@ class SentimentAnalysisModel:
 
     def _post_process(
         self, text: str, prediction: float, start_time: float
-    ) -> CommentTypePredictionResult:
+    ) -> SentimentPredictionResult:
         logger.debug("Post-processing prediction.")
         # Decode sentiment
         label = self._decode_sentiment(prediction)
 
-        return CommentTypePredictionResult(
+        return SentimentPredictionResult(
             label=label, score=prediction, elapsed_time=(time.time() - start_time),
         )
 
